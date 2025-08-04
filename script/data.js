@@ -1,4 +1,4 @@
-const data = [
+let data = [
     {
         "name": "Afghanistan",
         "topLevelDomain": [
@@ -20500,3 +20500,5 @@ const data = [
         "independent": true
     }
 ]
+
+data = data.filter(country => country.name !== 'Armenia');

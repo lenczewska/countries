@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Cards</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6 bg-gray-100">
+
+  <div class="cards grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
+  <button id="showMoreBtn" class="mt-6 p-2 bg-blue-500 text-white rounded">Show More</button>
+
+  <script>
+    const data = [
+      {
+        name: "Afghanistan",
+        capital: "Kabul",
+        region: "Asia",
+        population: 40218234,
+        area: 652230,
+        timezones: ["UTC+04:30"],
+        nativeName: "افغانستان",
+        demonym: "Afghan",
+        flags: { png: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_the_Taliban.svg/320px-Flag_of_the_Taliban.svg.png" },
+        languages: [{ name: "Pashto" }, { name: "Uzbek" }, { name: "Turkmen" }],
+        currencies: [{ name: "Afghan afghani", symbol: "؋" }],
+        borders: ["IRN", "PAK", "TKM", "UZB", "TJK", "CHN"]
+      },
+      // Добавь еще объектов для проверки
+    ];
+
+    const container = document.querySelector('.cards');
+    const showMoreBtn = document.getElementById('showMoreBtn');
+
+    let currentIndex = 0;
+    const initialCount = 2;
+    const stepCount = 2;
+
+    function renderCards(start, count) {
+      const end = Math.min(start + count, data.length);
+      for (let i = start; i < end; i++) {
+        const item = data[i];
+        const card = document.createElement('div');
+        card.className = "max-w-sm rounded-xl overflow-hidden shadow-lg bg-white border p-4";
+
+        const flagUrl = item.flags?.png;
+
+        card.innerHTML = `
+          <img class="w-full h-48 object-cover rounded" src="${flagUrl}" alt="${item.name} Flag">
+          <div class="px-2 py-4">
+            <h2 class="font-bold text-xl mb-1">${item.name}</h2>
+            <p class="text-gray-700 text-sm mb-1"><strong>Region:</strong> ${item.region}</p>
+            <p class="text-gray-700 text-sm mb-2"><strong>Capital:</strong> ${item.capital}</p>
+            <button class="more-btn text-blue-600 text-sm hover:underline">More</button>
+          </div>
+        `;
+
+        const moreBtn = card.querySelector('.more-btn');
+        moreBtn.addEventListener('click', () => {
+          localStorage.setItem('country', JSON.stringify(item));
+          window.location.href = 'details.html';
+        });
+
+        container.appendChild(card);
+      }
+      currentIndex = end;
+      if (currentIndex >= data.length) {
+        showMoreBtn.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCards(0, initialCount);
+    });
+
+    showMoreBtn.addEventListener('click', () => {
+      renderCards(currentIndex, stepCount);
+    });
+  </script>
+</body>
+</html>

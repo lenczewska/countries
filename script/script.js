@@ -1,66 +1,169 @@
 
-document.addEventListener("DOMContentLoaded", () => {
-  const container = document.querySelector('.cards');
-  const showMoreBtn = document.getElementById('showMoreBtn');
+const container = document.querySelector('.cards');
+const showMoreBtn = document.getElementById('showMoreBtn');
+const searchInput = document.getElementById('searchInput');
+const regionLinks = document.querySelectorAll('.region-link');
 
-  let currentIndex = 0;
-  const initialCount = 12;
-  const stepCount = 20;
+let currentIndex = 0;
+const initialCount = 12;
+const stepCount = 20;
 
-  function renderCards(start, count) {
-    const end = Math.min(start + count, data.length);
-    for (let i = start; i < end; i++) {
-      const item = data[i];
-      const card = document.createElement('div');
-      card.className = "max-w-sm rounded-xl overflow-hidden shadow-lg bg-white border p-4";
+let currentDataRegion = data; 
+let currentData = data;       
 
-      const flagUrl = item.flags?.png || 'https://via.placeholder.com/320x200?text=No+Flag';
+let featuredWrapper = null; 
 
-      card.innerHTML = `
-        <img class="w-full h-48 object-cover rounded" src="${flagUrl}" alt="${item.name} Flag">
-        <div class="px-2 py-4">
-          <h2 class="font-bold text-xl mb-1">${item.name}</h2>
-          <p class="text-gray-700 text-sm mb-1"><strong>Region:</strong> ${item.region}</p>
-          <p class="text-gray-700 text-sm mb-2"><strong>Capital:</strong> ${item.capital}</p>
-          <button class="text-blue-600 text-sm hover:underline more-toggle">More</button>
-          <div class="more-content overflow-hidden max-h-0 opacity-0 transition-all duration-300 ease-in-out mt-2 text-sm text-gray-600 space-y-1">
-            <p><strong>Population:</strong> ${item.population?.toLocaleString() || 'N/A'}</p>
-            <p><strong>Area:</strong> ${item.area?.toLocaleString() || 'N/A'} km²</p>
-            <p><strong>Timezones:</strong> ${item.timezones?.join(', ') || 'N/A'}</p>
-            <p><strong>Native Name:</strong> ${item.nativeName || 'N/A'}</p>
-            <p><strong>Demonym:</strong> ${item.demonym || 'N/A'}</p>
-            <p><strong>Languages:</strong> ${item.languages?.map(lang => lang.name).join(', ') || 'N/A'}</p>
-            <p><strong>Currencies:</strong> ${item.currencies?.map(cur => `${cur.name} (${cur.symbol})`).join(', ') || 'N/A'}</p>
-            <p><strong>Borders:</strong> ${item.borders?.join(', ') || 'N/A'}</p>
-          </div>
-        </div>
-      `;
+function renderFeaturedCountry() {
+  const randomIndex = Math.floor(Math.random() * data.length);
+  const featuredCountry = data[randomIndex];
 
-      const toggleBtn = card.querySelector('.more-toggle');
-      const moreContent = card.querySelector('.more-content');
+  const featuredWrapper = document.createElement('div');
+  featuredWrapper.className = "flex justify-center my-10";
 
-      toggleBtn.addEventListener('click', () => {
-        moreContent.classList.toggle('max-h-0');
-        moreContent.classList.toggle('opacity-0');
-        moreContent.classList.toggle('max-h-[500px]');
-        moreContent.classList.toggle('opacity-100');
-      });
+  const featuredContainer = document.createElement('div');
+  featuredContainer.className = `
+    w-[600px] h-[400px] p-4
+    bg-white rounded-xl shadow-lg overflow-hidden
+    flex
+  `;
 
-      container.appendChild(card);
-    }
+  featuredContainer.innerHTML = `
+    <div class="w-[250px] h-full flex flex-col">
+      <img src="${featuredCountry.flags.png}" alt="${featuredCountry.name} Flag"
+        class="w-full h-[300px] object-cover border-r border-gray-300">     
+    </div>
 
-    currentIndex = end;
+    <div class="w-[350px] h-full px-6 py-8 gap-3">
+     <div class="text-center text-lg font-semibold py-2 bg-gray-50 border-t  border-gray-300 rounded-bl-xl">
+        ${featuredCountry.name}
+      </div>
+      <p class="text-gray-700"><strong>Region:</strong> ${featuredCountry.region}</p>
+      <p class="text-gray-700"><strong>Capital:</strong> ${featuredCountry.capital}</p>
+      <p class="text-gray-700"><strong>Population:</strong> ${featuredCountry.population.toLocaleString()}</p>
+      <button class="more-btn text-blue-600 hover:underline mt-4">More</button>
+    </div>
+  `;
 
-    if (currentIndex >= data.length) {
-      showMoreBtn.classList.add('hidden');
-    }
-  }
+  const moreBtn = featuredContainer.querySelector('.more-btn');
+  moreBtn.addEventListener('click', () => {
+    localStorage.setItem('country', JSON.stringify(featuredCountry));
+    window.location.href = 'details.html';
+  });
+
+  featuredWrapper.appendChild(featuredContainer);
+  container.parentNode.insertBefore(featuredWrapper, container);
+}
+
+
+function renderCards(dataset, start, count) {
+  const end = Math.min(start + count, dataset.length);
+  for (let i = start; i < end; i++) {
+    const item = dataset[i];
+    const card = document.createElement('div');
+    card.className = "max-w-sm rounded-xl overflow-hidden shadow-lg bg-white border p-4";
+
+    const flagUrl = item.flags?.png;
 
   
-  renderCards(0, initialCount);
+
+    card.innerHTML = `
+  <img class="w-full h-48 object-cover rounded" src="${flagUrl}" alt="${item.name} Flag">
+  <div class="px-2 py-4">
+    <h2 class="font-bold text-xl mb-1" style="color: black;">${item.name}</h2>
+    <p class="text-gray-700 text-sm mb-1"><strong>Region:</strong> ${item.region}</p>
+    <p class="text-gray-700 text-sm"><strong>Capital:</strong> ${item.capital}</p>
+  </div>
+`;
+
+    card.addEventListener('click', () => {
+      localStorage.setItem('country', JSON.stringify(item));
+      window.location.href = 'details.html';
+    });
+
+    container.appendChild(card);
+  }
+
+  currentIndex = end;
+
+  if (currentIndex >= dataset.length) {
+    showMoreBtn.classList.add('hidden');
+  } else {
+    showMoreBtn.classList.remove('hidden');
+  }
+}
 
 
-  showMoreBtn.addEventListener('click', () => {
-    renderCards(currentIndex, stepCount);
+function filterAndRender() {
+  const searchTerm = searchInput.value.trim().toLowerCase();
+
+  let filtered = currentDataRegion;
+
+  if (searchTerm) {
+    filtered = filtered.filter(country =>
+      country.name.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  currentData = filtered;
+  currentIndex = 0;
+
+  container.innerHTML = '';
+
+  if (searchTerm || currentDataRegion !== data) {
+    if (featuredWrapper) featuredWrapper.style.display = 'none';
+  } else {
+    if (featuredWrapper) featuredWrapper.style.display = 'flex';
+  }
+
+  renderCards(currentData, 0, stepCount);
+
+  if (currentData.length <= stepCount) {
+    showMoreBtn.classList.add('hidden');
+  } else {
+    showMoreBtn.classList.remove('hidden');
+  }
+}
+
+searchInput.addEventListener('input', () => {
+  filterAndRender();
+});
+
+regionLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const selectedRegion = link.dataset.region;
+
+    if (!selectedRegion) {
+      currentDataRegion = data;
+      if (featuredWrapper) featuredWrapper.style.display = 'flex';
+    } else {
+      currentDataRegion = data.filter(country => country.region === selectedRegion);
+      if (featuredWrapper) featuredWrapper.style.display = 'none';
+    }
+
+    searchInput.value = '';
+    filterAndRender();
   });
 });
+
+showMoreBtn.addEventListener('click', () => {
+  renderCards(currentData, currentIndex, stepCount);
+});
+
+
+renderFeaturedCountry();
+filterAndRender();
+
+
+//dark mood
+
+let flag = false
+
+function dayNight() {
+  flag = !flag
+  theme.innerHTML = flag ? '<i class="fa-regular fa-moon"></i>' :
+    '<i class="fa-regular fa-sun"></i>'
+  document.documentElement.classList.toggle('dark')
+}
+dayNight()

@@ -1,0 +1,56 @@
+:root {
+    --bg: #f5f3f7;
+    --txt: #2c2c2c;
+    --header: #ffffff;
+    --card: rgba(173, 155, 255, 0.07);
+    --cardTxt: #050303;
+    --inpTxt: #3b3b3b;
+    --border: #e5e1f7;
+}
+
+.dark {
+    --bg: #0c0c1f;
+    --txt: #91828288;
+    --cardTxt: #000;
+    --header: #1a1a2e;
+    --card: rgba(157, 123, 255, 0.08);
+    --inpTxt: #ddddff;
+    --border: #27264f;
+}
+
+
+header {
+    background-color: var(--header);
+    color: var(--txt);
+}
+
+input {
+    border: var(--border);
+    color: var(--inpTxt);
+    width: 300px;
+    height: 40px;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--txt);
+}
+
+#card {
+    background-color: var(--card);
+    color: var(--cardTxt);
+    border-radius: 50%;
+}
+
+.fa-sun,
+.fa-moon {
+    font-size: 1.7rem;
+}
+
+.region-link {
+    font-size: 1.5rem;
+}
+
+.cards {
+    margin-top: 20px;
+}

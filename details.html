@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Country Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800 p-8">
+  <div class="max-w-xl mx-auto bg-white rounded-xl shadow-md p-6">
+    <img id="flag" class="w-full h-48 object-cover rounded mb-4" src="" alt="">
+    <h2 class="text-2xl font-bold mb-2" id="name"></h2>
+    <p><strong>Capital:</strong> <span id="capital"></span></p>
+    <p><strong>Region:</strong> <span id="region"></span></p>
+    <p><strong>Population:</strong> <span id="population"></span></p>
+    <p><strong>Area:</strong> <span id="area"></span> km²</p>
+    <p><strong>Timezones:</strong> <span id="timezones"></span></p>
+    <p><strong>Native Name:</strong> <span id="native"></span></p>
+    <p><strong>Demonym:</strong> <span id="demonym"></span></p>
+    <p><strong>Languages:</strong> <span id="languages"></span></p>
+    <p><strong>Currencies:</strong> <span id="currencies"></span></p>
+    <p><strong>Borders:</strong> <span id="borders"></span></p>
+    <a href="index.html" class="text-blue-500 mt-4 inline-block">← Back</a>
+  </div>
+
+  <script src="./script/data.js"></script>
+
+  <script>
+     document.addEventListener('DOMContentLoaded', () => {
+    const data = JSON.parse(localStorage.getItem('country'));
+    if (!data) {
+      // Если нет данных, можно показать сообщение или редирект
+      console.warn('No country data found in localStorage');
+      return;
+    }
+
+    document.getElementById('flag').src = data.flags.png;
+    document.getElementById('flag').alt = `${data.name} Flag`;
+    document.getElementById('name').textContent = data.name;
+    document.getElementById('capital').textContent = data.capital || 'N/A';
+    document.getElementById('region').textContent = data.region || 'N/A';
+    document.getElementById('population').textContent = data.population ? Number(data.population).toLocaleString() : 'N/A';
+    document.getElementById('area').textContent = data.area ? Number(data.area).toLocaleString() : 'N/A';
+    document.getElementById('timezones').textContent = data.timezones ? data.timezones.join(', ') : 'N/A';
+    document.getElementById('native').textContent = data.nativeName || 'N/A';
+    document.getElementById('demonym').textContent = data.demonym || 'N/A';
+    document.getElementById('languages').textContent = data.languages ? data.languages.map(lang => lang.name).join(', ') : 'N/A';
+    document.getElementById('currencies').textContent = data.currencies ? data.currencies.map(curr => curr.name).join(', ') : 'N/A';
+    document.getElementById('borders').textContent = data.borders ? data.borders.join(', ') : 'N/A';
+  });
+  </script>
+
+</body>
+</html>
